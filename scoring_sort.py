@@ -1,4 +1,5 @@
 """
+Run table_for_heat_diagram.py before running this (side project function)
 python3 scoring_sort.py -i input_files/
 python3 scoring_sort.py -i ecoli_bamA_mosselii_llpA1/analysis/
 """

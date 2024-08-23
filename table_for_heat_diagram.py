@@ -3,11 +3,12 @@ python3 table_for_heat_diagram.py -i input_files/
 python3 table_for_heat_diagram.py -i ecoli_bamA_mosselii_llpA1/analysis/
 """
 
+import re
 import numpy as np
 import pandas as pd
-import re
-from modules import io_utils
 import matplotlib.pyplot as plt
+from modules import io_utils
+
 
 
 def main():
@@ -38,13 +39,13 @@ def main():
                                                     search_range, final_position)
 
     # side project: sort residues by number of contacts
-    sort_receptor_residues_by_contacts(complete_contacts_matrix, complete_residue_list, search_range, infile)
+    sort_receptor_residues_by_contacts(complete_contacts_matrix, complete_residue_list, infile)
 
     # Formats the contacts matrix and residues list
     df, complete_residue_list = format_matrix_and_row_labels(complete_contacts_matrix, complete_residue_list)
 
     # Create Heat Map:
-    # create_heat_map(df, complete_residue_list, search_range)
+    create_heat_map(df, complete_residue_list, search_range, infile)
 
 
 def find_sequence_number(residue):
@@ -84,7 +85,6 @@ def fill_row_names(pdb_dict_residue_pairs):
         [complete_residue_list.append(str(n)) for n in range(start+1, end)]
         if end == final_position:
             complete_residue_list.append(sorted_receptor_residues[tally])
-    # print(complete_residue_list)  # contains all row headings for heat map matrix
     return complete_residue_list, final_position
 
 
@@ -100,16 +100,11 @@ def fill_known_contacts(data_table, search_range):
             contacts_matrix[pdb_number].append(_sum_of_contacts_for_residue(data_table, row))
         else:
             continue
-
-    # print(identified_sequence_numbers)
-    # print(data_table)
-    # print(contacts_matrix)
     return contacts_matrix
 
 
 def _sum_of_contacts_for_residue(data_table, row):
     contacts_count = int(data_table['Strength of contacts'][row])
-    # print(data_table['Receptor residue and number'][row+1])
     row = row + 1
     if row >= len(data_table):
         return contacts_count
@@ -135,7 +130,6 @@ def fill_sorted_receptor_residues(pdb_dict_residue_pairs, search_range):
     for number in range(len(search_range) - 1):
         identified_receptor_residues_individual_list[number] = sorted(list(
             identified_receptor_residues_individual[number]), key=find_sequence_number)
-    # print(identified_receptor_residues_individual_list)
     return identified_receptor_residues_individual_list
 
 
@@ -165,9 +159,6 @@ def fill_contacts_matrix(contacts_matrix, identified_receptor_residues_individua
                 pdb_known_residues_final_position[key])
             for n in range(repeat_index):
                 complete_contacts_matrix[key].append(0)
-    # print(complete_contacts_matrix)
-    # for key in range(len(search_range) - 1):
-    #    print(len(complete_contacts_matrix[key]))
     return complete_contacts_matrix
 
 
@@ -175,22 +166,27 @@ def format_matrix_and_row_labels(complete_contacts_matrix, complete_residue_list
     complete_contacts_matrix = list(map(list, zip(*complete_contacts_matrix)))
     df = pd.DataFrame(complete_contacts_matrix)
     # df2 = df.iloc[700:792]
-    df = df[:][::-1]
+    # df = df[:][::-1]
     complete_residue_list = complete_residue_list[::-1]
     return df, complete_residue_list
 
 
-def create_heat_map(df, complete_residue_list, search_range):
-    plt.yticks(range(0, len(complete_residue_list)), complete_residue_list, fontsize=3)
-    plt.xticks(range(len(search_range) - 1), fontsize=10)
-    plt.imshow(df, cmap='hot', interpolation='nearest', aspect=0.05)
+def create_heat_map(df, complete_residue_list, search_range, infile):
+    # plt.yticks(range(0, len(complete_residue_list)), complete_residue_list, fontsize=3)
+    y_labels = np.arange(0, len(complete_residue_list), 10)
+    x_labels = [f"{i}.pdb" for i in range(len(search_range))]
+    plt.yticks(y_labels, fontsize=3)
+    plt.xticks(range(len(search_range)), labels=x_labels, fontsize=4)
+    plt.imshow(df, cmap='magma', interpolation='nearest', aspect=0.025)
     # aspect='auto'
+    plt.gca().invert_yaxis()
     plt.tight_layout()
+    df.to_csv(infile + "contacts_heat_matrix.csv", sep='\t', encoding='utf-8', index=False)
+    plt.savefig(infile + "heatmap.png", dpi=1000)
     plt.show()
-    df.to_csv("contacts_heat_matrix.csv", sep='\t', encoding='utf-8', index=False)
 
 
-def sort_receptor_residues_by_contacts(complete_contacts_matrix, complete_residue_list, search_range, infile):
+def sort_receptor_residues_by_contacts(complete_contacts_matrix, complete_residue_list, infile):
     df = pd.DataFrame(complete_contacts_matrix)
     df = df.transpose()
     row_headings = pd.Series(complete_residue_list)

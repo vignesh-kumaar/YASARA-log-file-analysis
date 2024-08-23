@@ -14,8 +14,10 @@ from modules import io_utils
 
 
 def main():
+    args = io_utils.get_cli_args()
+    infile = args.input
     # Reads the contacts.csv file
-    large_table = pd.read_csv("contacts.csv", sep="\t")
+    large_table = pd.read_csv(infile + "contacts.csv", sep="\t")
 
     # Uses the table as input and returns an empty dict of lists and a search range list with the
     # row indices of the table that distinguish between pdb files and the first and last index of the table.
@@ -75,7 +77,7 @@ def main():
                 if repeat_index < 0:
                     repeat_index = 0
                 for n in range(repeat_index):
-                    print(null_index, repeat_index_old, repeat_index)
+                    # print(null_index, repeat_index_old, repeat_index)
                     pairs_contacts[key].append((null_index, 0))
                     null_index = null_index + 1
                 pairs_contacts[key].append(no_dash_incomplete_list[key][position])
@@ -87,9 +89,8 @@ def main():
                 pairs_contacts[key].append((null_index, 0))
                 null_index = null_index + 1
 
-    print(pairs_contacts[0])
     # Uses this dict of lists to write information from each pdb in a separate csv file.
-    write_output_to_csv_files(pairs_contacts)
+    write_output_to_csv_files(infile, pairs_contacts)
 
 
 def write_to_dict_of_list(large_table, dict_of_list, search_range):
@@ -97,21 +98,22 @@ def write_to_dict_of_list(large_table, dict_of_list, search_range):
     # strength of contacts to the dict of lists
     for i, (start, end) in enumerate(zip(search_range[:-1], search_range[1:])):
         for row, column in large_table.iloc[start + 1:end].iterrows():
-            dict_of_list[i].append((column[1] + '+' + column[2], column[3]))
+            dict_of_list[i].append((column.iloc[1] + '+' + column.iloc[2], column.iloc[3]))
 
     return dict_of_list
 
 
-def write_output_to_csv_files(dict_of_list):
+def write_output_to_csv_files(infile, dict_of_list):
     # creates a directory to store output
-    title = 'line_plot_tables/contacts_of_pdb_.csv'
+    title = infile + 'line_plot_tables/contacts_of_pdb_.csv'
     if not os.path.exists(os.path.dirname(title)):
         os.mkdir(os.path.dirname(title))
 
     # writes each list in dict_of_list in separate tables
+    last_slash_index = title.rfind('/')
     for j in dict_of_list:
         df = pd.DataFrame(dict_of_list[j])
-        specific_title = title[:33] + str(j) + title[33:]
+        specific_title = title[:last_slash_index + 17] + str(j) + title[last_slash_index + 17:]
         df.to_csv(specific_title, sep='\t', encoding='utf-8', index=False)
 
 

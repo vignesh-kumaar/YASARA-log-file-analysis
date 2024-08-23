@@ -1,5 +1,5 @@
 """
-File: YASARA_data_to_csv.py
+File: other_interactions_to_csv.py
 
 This program takes YASARA log file data and outputs necessary information into a csv file
 
@@ -7,13 +7,13 @@ example command: python3 other_interactions_to_csv.py -i input_files/
 python3 other_interactions_to_csv.py -i ecoli_bamA_mosselii_llpA1/analysis/
 """
 
-from modules import io_utils
-from docx import Document
 import pandas as pd
+from docx import Document
+from modules import io_utils
 
 
 def main():
-    """Business Logic"""
+    """ Business Logic """
 
     # declaring and initializing data
     args = io_utils.get_cli_args()
@@ -27,6 +27,12 @@ def main():
 
 
 def read_other_interactions_to_df(file=None):
+    """
+    Reads required information into an empty list and converts it to a dataframe
+    :param file: path to the other_interactions file + filename
+    :return: dataframe with required information from other_interactions.docx
+    """
+
     # Step 1
     # Initialize empty list and open log file using Document method
     data_array = []
@@ -53,6 +59,12 @@ def read_other_interactions_to_df(file=None):
 
 
 def _format_df(df):
+    """
+    Formats the dataframe to distribute the information over distinct columns
+    :param df: dataframe with information from other_interactions.docx
+    :return: dataframe
+    """
+
     # Step 2
     # Initialize variable and new df for the next step
     receptor_residue_to_add = None
@@ -66,9 +78,9 @@ def _format_df(df):
         'Interaction strength'
     ])
 
-    # Iterate through rows of df and store bacteriocin contact residues as a separate index associated
-    # with a given receptor contact residue
-    for index, row in df.iterrows():
+    # Iterate through rows of df and store bacteriocin contact residues as a separate index
+    # associated with a given receptor contact residue
+    for _, row in df.iterrows():
         value = row[0]
         if isinstance(value, str):
             if "pdb" in value:

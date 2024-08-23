@@ -1,4 +1,5 @@
 """
+
 python3 domain_binding_measure.py -i input_files/
 """
 
@@ -12,8 +13,6 @@ def main():
     h_bonds_table = pd.read_csv(infile + 'hbonds.csv', sep='\t')
     other_interactions_table = pd.read_csv(infile + 'other_interactions.csv', sep='\t')
 
-    # print(h_bonds_table)
-    # print(other_interactions_table)
     other_interactions_table['N.of interactions'] = pd.to_numeric(other_interactions_table['N.of interactions'],
                                                                   errors='coerce')
     other_interactions_table['N.of interactions'] = other_interactions_table['N.of interactions'].fillna(0)

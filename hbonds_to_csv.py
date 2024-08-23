@@ -1,5 +1,5 @@
 """
-File: YASARA_data_to_csv.py
+File: hbonds_to_csv.py
 
 This program takes YASARA log file data and outputs necessary information into a csv file
 
@@ -7,13 +7,13 @@ example command: python3 hbonds_to_csv.py -i input_files/
 python3 hbonds_to_csv.py -i ecoli_bamA_mosselii_llpA1/analysis/
 """
 
-from modules import io_utils
-from docx import Document
-import pandas as pd
 
+import pandas as pd
+from docx import Document
+from modules import io_utils
 
 def main():
-    """Business Logic"""
+    """ Business Logic """
 
     # declaring and initializing data
     args = io_utils.get_cli_args()
@@ -27,6 +27,12 @@ def main():
 
 
 def read_hbonds_to_df(file=None):
+    """
+    Reads required information into an empty list and converts it to a dataframe
+    :param file: path to the hbonds file + filename
+    :return: dataframe with required information from hbonds.docx
+    """
+
     # Step 1
     # Initialize empty list and open log file using Document method
     data_array = []
@@ -42,7 +48,8 @@ def read_hbonds_to_df(file=None):
             if words[0] == "Residue":
                 data_array.append(words[1] + words[3])
             elif words[0] == "Atom":
-                data_array.append(words[1:2] + [words[2] + words[3]] + words[5:6] + words[9:10] + [words[10] + words[11]] + words[17:18] + words[22:23])
+                data_array.append(words[1:2] + [words[2] + words[3]] + words[5:6] + words[9:10]
+                                  + [words[10] + words[11]] + words[17:18] + words[22:23])
             # elif len(words) >= 2:
             #    if words[1] == "hydrogen":
             #        data_array.append(words[16])
@@ -54,6 +61,12 @@ def read_hbonds_to_df(file=None):
 
 
 def _format_df(df):
+    """
+    Formats the dataframe to distribute the information over distinct columns
+    :param df: dataframe with information from hbonds.docx
+    :return: dataframe
+    """
+
     # Step 2
     # Initialize variable and new df for the next step
     receptor_residue_to_add = None
@@ -68,9 +81,9 @@ def _format_df(df):
         'Bond energy'
     ])
 
-    # Iterate through rows of df and store bacteriocin contact residues as a separate index associated
-    # with a given receptor contact residue
-    for index, row in df.iterrows():
+    # Iterate through rows of df and store bacteriocin contact residues as a separate index
+    # associated with a given receptor contact residue
+    for _, row in df.iterrows():
         value = row[0]
         if isinstance(value, str):  # Check if the entry is a non-list (PDB/receptor residue)
             if "pdb" in value:

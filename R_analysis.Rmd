@@ -1,0 +1,127 @@
+---
+title: "R_analysis"
+output: html_notebook
+---
+
+# Set working environment path:
+```{r}
+setwd("/home/vignesh/Data/old_ubuntu/summer-research")
+```
+
+# install packages
+```{r}
+install.packages("ggplot2")
+install.packages("dplyr")
+install.packages("reshape")
+```
+
+# load libraries
+```{r}
+library(ggplot2)
+library(dplyr)
+library(reshape)
+```
+
+# Line plot of contacts
+```{r}
+rm(list=ls())
+# modify the file name in the line below to display a line plot for that file
+line_plot_table <- read.csv("input_files/line_plot_tables/contacts_of_pdb_2.csv", sep="\t")
+head(data)
+
+
+line_plot_table <- line_plot_table %>%
+  mutate(X0 = make.unique(as.character(X0)))
+
+
+line_plot_table$X0 <- factor(line_plot_table$X0, levels = line_plot_table$X0)
+
+
+ggplot(line_plot_table, aes(x = X0, y = X1, group = 1)) +
+  geom_point( alpha = 0.5) +
+  labs(x = "Receptor + Binding Residues", y = "Contacts", title = "Line Plot of Binding pairs vs Contacts") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=3))
+```
+
+# Comparing interactions_table of two datasets:
+```{r}
+rm(list=ls())
+
+# initializing variables:
+sample_1_data <- read.csv("ecoli_bamA_mosselii_llpA1/analysis/interactions_table.csv", sep="\t")
+sample_2_data <- read.csv("input_files/interactions_table.csv", sep="\t")
+
+sample_1_contacts <- as.numeric(unlist(sample_1_data['Contacts.across.PDBs']))
+sample_2_contacts <- as.numeric(unlist(sample_2_data['Contacts.across.PDBs']))
+
+sample_1_hbonds <- as.numeric(unlist(sample_1_data['h_bonds']))
+sample_2_hbonds <- as.numeric(unlist(sample_2_data['h_bonds']))
+
+sample_1_hydrophobic <- as.numeric(unlist(sample_1_data['Hydrophobic']))
+sample_2_hydrophobic <- as.numeric(unlist(sample_2_data['Hydrophobic']))
+
+sample_1_ionic <- as.numeric(unlist(sample_1_data['Ionic']))
+sample_2_ionic <- as.numeric(unlist(sample_2_data['Ionic']))
+
+sample_1_cationpi <- as.numeric(unlist(sample_1_data['CationPi']))
+sample_2_cationpi <- as.numeric(unlist(sample_2_data['CationPi']))
+
+sample_1_pipi <- as.numeric(unlist(sample_1_data['PiPi']))
+sample_2_pipi <- as.numeric(unlist(sample_2_data['PiPi']))
+
+# Test to check if samples don't follow a normal distribution
+shapiro.test(sample_2_contacts)
+shapiro.test(sample_1_contacts)
+shapiro.test(sample_2_hbonds)
+shapiro.test(sample_1_hbonds)
+shapiro.test(sample_2_hydrophobic)
+shapiro.test(sample_1_hydrophobic)
+shapiro.test(sample_2_ionic)
+shapiro.test(sample_1_ionic)
+shapiro.test(sample_2_cationpi)
+shapiro.test(sample_1_cationpi)
+shapiro.test(sample_2_pipi)
+shapiro.test(sample_1_pipi)
+
+# Since data is not normally distributed:
+wilcox.test(sample_2_contacts, sample_1_contacts)
+
+wilcox.test(sample_2_hbonds, sample_1_hbonds)
+
+wilcox.test(sample_2_hydrophobic, sample_1_hydrophobic)
+
+wilcox.test(sample_2_ionic, sample_1_ionic)
+
+wilcox.test(sample_2_cationpi, sample_1_cationpi)
+
+wilcox.test(sample_2_pipi, sample_1_pipi)
+
+
+mean(sample_2_contacts)
+mean(sample_1_contacts)
+
+mean(sample_2_hbonds)
+mean(sample_1_hbonds)
+
+mean(sample_2_hydrophobic)
+mean(sample_1_hydrophobic)
+
+mean(sample_2_ionic)
+mean(sample_1_ionic)
+
+mean(sample_2_cationpi)
+mean(sample_1_cationpi)
+
+mean(sample_2_pipi)
+mean(sample_1_pipi)
+
+
+#
+# When lists don't include zeros:
+sample_2_contacts <- sample_2_contacts[sample_2_contacts != 0]
+sample_1_contacts <- sample_1_contacts[sample_1_contacts != 0]
+
+wilcox.test(sample_2_contacts, sample_1_contacts)
+```
+
