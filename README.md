@@ -1,30 +1,30 @@
 # YASARA-log-file-analysis
-## Processes YASARA log files of protein-protein docked models to extract and visualize information
+Processes YASARA log files of protein-protein docked models to extract and visualize information
 
-### Prerequisite installations
+## Prerequisite installations
 * YASARA
 * Python
 * R
 
-### Python Dependencies
+## Python Dependencies
 * re
 * pandas
 * numpy
 * matplotlib
 * python-docx
 
-### R Dependencies
+## R Dependencies
 * ggplot2
 * dplyr
 * reshape
 
-### Introduction
+## Introduction
 YASARA is a molecular visualization software with many functions built into it. One such
 function is the analysing interactions feature which predicts possible interactions between
 different molecules, atoms, or residues. This repository was developed to better utilize
 the output provided by this function for the purpose of docked-model studies. 
 
-### Guidelines for creating log files (.docx)
+## Guidelines for creating log files (.docx)
 * You will need to create three log files; one for contacts, one for hbonds, and one for
 other_interactions. Name these files as contacts.docx, hbonds.docx, and other_interactions.docx
 * Rename your post-docking pdb files using numbers. Eg: 0.pdb, 1.pdb etc...
@@ -32,7 +32,7 @@ other_interactions. Name these files as contacts.docx, hbonds.docx, and other_in
 * Copy and paste the interactions information from YASARA for each pdb file
 * Insert page breaks at the end of interactions information for each pdb file
 
-### How do I use this?
+## How do I use this?
 1. Make log files using YASARA and your post-docking pdb files following the guidelines provided (insert link)
 2. Create a new folder inside the repository and place the three log files inside the folder
 3. Run the scripts contacts_to_csv.py, hbonds_to_csv.py, and other_interactions_to_csv.py to convert log file data
@@ -47,9 +47,37 @@ to generate its respective line plots
 7. Run domain_binding_measure.py
 8. Run and adjust ranges for loop_contributions.py
 
-domain_binding_measure
-loop_contributions
-scoring_sort
-table_for_heat_diagram
-table_for_line_plot
-analysis.R
+## About each Script:
+### contacts_to_csv.py
+This program takes YASARA log file data (contacts.docx) and outputs necessary information
+into a csv file.
+
+### hbonds_to_csv.py
+This program takes YASARA log file data (hbonds.docx) and outputs necessary information
+into a csv file.
+
+### other_interactions_to_csv.py
+This program takes YASARA log file data (other_interactions.docx) and outputs necessary 
+information into a csv file.
+
+### domain_binding_measure.py
+Identifies the ratio of residues in the N domain vs the C domain of the binding protein.
+* specify the sequence range of the N domain using --start and --end
+
+### tables_for_line_plot.py
+Creates n tables with contacts information for the n pdb files used in the YASARA
+analysis.
+
+### table_for_heat_diagram.py
+Generates a heat diagram with receptor residue vs PDB file number for the axes and colored
+based on the strength of the interaction.
+
+### loop_contributions.py
+
+
+### scoring_sort.py
+Sorts receptor residues as likely binding sites using information from all identified
+interactions.
+
+### R_analysis.Rmd
+R notebook containing all analyses that can be performed in R.

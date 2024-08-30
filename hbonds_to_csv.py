@@ -1,7 +1,8 @@
 """
 File: hbonds_to_csv.py
 
-This program takes YASARA log file data and outputs necessary information into a csv file
+This program takes YASARA log file data (hbonds.docx) and outputs necessary
+information into a csv file
 
 example command: python3 hbonds_to_csv.py -i input_files/
 python3 hbonds_to_csv.py -i ecoli_bamA_mosselii_llpA1/analysis/

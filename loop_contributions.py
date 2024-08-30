@@ -1,4 +1,7 @@
 """
+
+
+example command:
 python3 loop_contributions.py -i input_files/
 """
 
@@ -15,7 +18,6 @@ def main():
     interactions_table = pd.read_csv(infile + 'interactions_table.csv', sep='\t')
     interactions_table['Receptor residue'] = interactions_table['Receptor residue'].apply(io_utils.find_sequence_number).astype(int)
 
-    # print(interactions_table)
     track_particular_loops(interactions_table)
 
 

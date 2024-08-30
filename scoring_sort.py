@@ -1,7 +1,9 @@
 """
-Run table_for_heat_diagram.py before running this (side project function)
+Sorts receptor residues as likely binding sites using information from all identified interactions.
+
+NOTE: Run table_for_heat_diagram.py before running this script
+example command:
 python3 scoring_sort.py -i input_files/
-python3 scoring_sort.py -i ecoli_bamA_mosselii_llpA1/analysis/
 """
 
 import pandas as pd
@@ -21,7 +23,6 @@ def main():
     interactions_table = contacts_unsorted_table
     other_interactions_table['Interaction strength'] = pd.to_numeric(other_interactions_table['Interaction strength'],
                                                                      errors="coerce")
-    print(other_interactions_table)
 
     # write the interactions into the interactions_table
     interactions_table['h_bonds'] = ''
