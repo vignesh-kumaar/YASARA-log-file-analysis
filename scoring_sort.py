@@ -101,7 +101,10 @@ def main():
             interactions_table.at[i - 1, 'PiPi'] = pi_pi_interaction_strength
     interactions_table[['Ionic', 'Hydrophobic', 'CationPi', 'PiPi']] = (
         interactions_table[['Ionic', 'Hydrophobic', 'CationPi', 'PiPi']].fillna(0))
-    interactions_table = interactions_table.sort_values(by=['h_bonds', 'mean_h_bond_energy'], ascending=False)
+    interactions_table['sequence_number'] = interactions_table['Receptor residue'].apply(find_sequence_number)
+    interactions_table = interactions_table.sort_values(by='sequence_number', ascending=True)
+    interactions_table = interactions_table.drop(columns=['sequence_number'])
+    # interactions_table = interactions_table.sort_values(by=['h_bonds', 'mean_h_bond_energy'], ascending=False)
     print(interactions_table)
     interactions_table.to_csv(infile + 'interactions_table.csv', sep='\t', encoding='utf-8', index=False)
     h_bonds_matrix = interactions_table[['Receptor residue', 'h_bonds', 'mean_h_bond_energy']]

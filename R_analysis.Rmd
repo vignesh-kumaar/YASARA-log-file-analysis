@@ -137,3 +137,34 @@ sample_1_contacts <- sample_1_contacts[sample_1_contacts != 0]
 wilcox.test(sample_2_contacts, sample_1_contacts)
 ```
 
+## H_bond plots
+```{r}
+rm(list=ls())
+# modify the path to the folder and the filename in the lines below to display a line plot for that file
+path_to_dir = "ians_work/analysis/"
+filename = "h_bonds_matrix.csv"
+
+path_to_file = paste(path_to_dir, filename, sep="")
+hbonds_table <- read.csv(path_to_file, sep="\t")
+
+# converts receptor residue strings to factors so they aren't sorted alphabetically when plotted
+hbonds_table$Receptor.residue <- as.character(hbonds_table$Receptor.residue)
+hbonds_table$Receptor.residue <- factor(hbonds_table$Receptor.residue, levels=unique(hbonds_table$Receptor.residue))
+
+# Scatter plot and formatting
+ggplot(hbonds_table, aes(x = Receptor.residue, y = mean_h_bond_energy, color = factor(h_bonds))) +
+  geom_point(alpha = 1) +
+  labs(x = "Receptor Residue", y = "Mean H Bond Energy", color = "H Bonds", title = "Scatter Plot of H bonds with Receptor residues") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=10)) # adjust the size of your x axis labels here
+
+# Saving the plot
+ggsave(
+  'hbonds_line_plot.png', # modify the file name of the plot here
+  path = path_to_dir, 
+  plot=last_plot(),
+  dpi = 1000
+)
+```
+
+
