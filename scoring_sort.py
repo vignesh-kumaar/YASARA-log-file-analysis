@@ -24,19 +24,22 @@ def main():
     other_interactions_table['Interaction strength'] = pd.to_numeric(other_interactions_table['Interaction strength'],
                                                                      errors="coerce")
 
-    # write the interactions into the interactions_table
+    # Create new columns in the interactions_table
     interactions_table['h_bonds'] = ''
+    # interactions_table['h_bond_energies'] = ''
+    interactions_table['mean_h_bond_energy'] = ''
 
     # Add information into interactions_table
     for i in range(1, len(contacts_unsorted_table) + 1):
+        h_bond_energies = []
         res_count = 0
         # using h_bonds_table:
         for j in range(len(h_bonds_table)):
             if 'pdb' in h_bonds_table.at[j, 'PDB file number']:
                 continue
-            # elif h_bonds_table.at[j, 'Receptor residue and number'] != '-':
             elif i == find_sequence_number(h_bonds_table.at[j, 'Receptor residue and number']):
                 res_count = res_count + 1
+                h_bond_energies.append(float(h_bonds_table.at[j, 'Bond energy']))
                 while h_bonds_table.at[j, 'Receptor residue and number'] == '-':
                     if 'pdb' in h_bonds_table.at[j, 'PDB file number']:
                         break
@@ -45,6 +48,10 @@ def main():
             else:
                 continue
         interactions_table.at[i-1, 'h_bonds'] = res_count
+        # interactions_table.at[i-1, 'h_bond_energies'] = h_bond_energies
+        if interactions_table.at[i-1, 'h_bonds'] > 0:
+            interactions_table.at[i-1, 'mean_h_bond_energy'] = (sum(h_bond_energies) /
+                                                                len(h_bond_energies))
 
         # using other_interactions_table:
         (ionic_interaction_strength, hydrophobic_interaction_strength,
@@ -94,9 +101,13 @@ def main():
             interactions_table.at[i - 1, 'PiPi'] = pi_pi_interaction_strength
     interactions_table[['Ionic', 'Hydrophobic', 'CationPi', 'PiPi']] = (
         interactions_table[['Ionic', 'Hydrophobic', 'CationPi', 'PiPi']].fillna(0))
-    interactions_table = interactions_table.sort_values(by='Contacts across PDBs', ascending=False)
+    interactions_table = interactions_table.sort_values(by=['h_bonds', 'mean_h_bond_energy'], ascending=False)
     print(interactions_table)
     interactions_table.to_csv(infile + 'interactions_table.csv', sep='\t', encoding='utf-8', index=False)
+    h_bonds_matrix = interactions_table[['Receptor residue', 'h_bonds', 'mean_h_bond_energy']]
+    h_bonds_matrix = h_bonds_matrix[h_bonds_matrix['h_bonds'] > 0]
+    print(h_bonds_matrix)
+    h_bonds_matrix.to_csv(infile + 'h_bonds_matrix.csv', sep='\t', encoding='utf-8', index=False)
 
 
 def find_sequence_number(residue):

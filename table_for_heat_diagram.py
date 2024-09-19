@@ -221,47 +221,6 @@ def fill_contacts_matrix(contacts_matrix, identified_receptor_residues_individua
     return complete_contacts_matrix
 
 
-def format_matrix_and_row_labels(complete_contacts_matrix, complete_residue_list):
-    """
-    Formats the contacts matrix and reverses the residue list. The new contacts matrix is a list of
-    list with each sublist corresponding to a given residue instead of a given PDB file.
-    :param complete_contacts_matrix: list of list containing all contacts values including zeros.
-    Each sublist of the list corresponds to a particular PDB file.
-    :param complete_residue_list: List of all receptor residues
-    :return: dataframe df containing the contacts matrix and list complete_residue_list containing
-    all receptor residues in descending order.
-    """
-
-    complete_contacts_matrix = list(map(list, zip(*complete_contacts_matrix)))
-    df = pd.DataFrame(complete_contacts_matrix)
-    # df2 = df.iloc[700:792]
-    complete_residue_list = complete_residue_list[::-1]
-    return df, complete_residue_list
-
-
-def create_heat_map(df, complete_residue_list, search_range, infile):
-    """
-    Creates the heat map.
-    :param df: Dataframe containing the contacts values of all receptor residue interactions
-    :param complete_residue_list: List of all receptor residues in descending order
-    :param search_range: list with row indices of contacts_table where a new pdb file is recorded
-    :param infile: path to the I/O directory provided by the user
-    :return: None
-    """
-    # plt.yticks(range(0, len(complete_residue_list)), complete_residue_list, fontsize=3)
-    y_labels = np.arange(0, len(complete_residue_list), 10)
-    x_labels = [f"{i}.pdb" for i in range(len(search_range))]
-    plt.yticks(y_labels, fontsize=3)
-    plt.xticks(range(len(search_range)), labels=x_labels, fontsize=4)
-    plt.imshow(df, cmap='magma', interpolation='nearest', aspect=0.025)
-    # aspect='auto'
-    plt.gca().invert_yaxis()
-    plt.tight_layout()
-    df.to_csv(infile + "contacts_heat_matrix.csv", sep='\t', encoding='utf-8', index=False)
-    plt.savefig(infile + "heatmap.png", dpi=1000)
-    plt.show()
-
-
 def sort_receptor_residues_by_contacts(complete_contacts_matrix, complete_residue_list, infile):
     """
     Sorts in descending order all receptor residues based on the number of contacts with the
@@ -289,6 +248,48 @@ def sort_receptor_residues_by_contacts(complete_contacts_matrix, complete_residu
                                        encoding='utf-8', index=False)
     non_zero_contacts_df.to_csv(infile + 'number_of_contacts_with_PDBs.csv', sep='\t',
                                 encoding='utf-8', index=False)
+
+
+def format_matrix_and_row_labels(complete_contacts_matrix, complete_residue_list):
+    """
+    Formats the contacts matrix and reverses the residue list. The new contacts matrix is a list of
+    list with each sublist corresponding to a given residue instead of a given PDB file.
+    :param complete_contacts_matrix: list of list containing all contacts values including zeros.
+    Each sublist of the list corresponds to a particular PDB file.
+    :param complete_residue_list: List of all receptor residues
+    :return: dataframe df containing the contacts matrix and list complete_residue_list containing
+    all receptor residues in descending order.
+    """
+
+    complete_contacts_matrix = list(map(list, zip(*complete_contacts_matrix)))
+    df = pd.DataFrame(complete_contacts_matrix)
+    # df2 = df.iloc[700:792]
+    complete_residue_list = complete_residue_list[::-1]
+    return df, complete_residue_list
+
+
+def create_heat_map(df, complete_residue_list, search_range, infile):
+    """
+    Creates the heat map.
+    :param df: Dataframe containing the contacts values of all receptor residue interactions
+    :param complete_residue_list: List of all receptor residues in descending order
+    :param search_range: list with row indices of contacts_table where a new pdb file is recorded
+    :param infile: path to the I/O directory provided by the user
+    :return: None
+    """
+
+    # plt.yticks(range(0, len(complete_residue_list)), complete_residue_list, fontsize=3)
+    y_labels = np.arange(0, len(complete_residue_list), 10)
+    x_labels = [f"{i}.pdb" for i in range(len(search_range))]
+    plt.yticks(y_labels, fontsize=3)
+    plt.xticks(range(len(search_range)), labels=x_labels, fontsize=4)
+    plt.imshow(df, cmap='magma', interpolation='nearest', aspect=0.025)
+    # aspect='auto'
+    plt.gca().invert_yaxis()
+    plt.tight_layout()
+    df.to_csv(infile + "contacts_heat_matrix.csv", sep='\t', encoding='utf-8', index=False)
+    plt.savefig(infile + "heatmap.png", dpi=1000)
+    # plt.show()
 
 
 if __name__ == "__main__":

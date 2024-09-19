@@ -1,10 +1,11 @@
 # YASARA-log-file-analysis
 Processes YASARA log files of protein-protein docked models to extract and visualize information
 
-## Prerequisite installations
+## Prerequisites
 * YASARA
 * Python
 * R
+* Two protein PDB files
 
 ## Python Dependencies
 * re
@@ -19,7 +20,7 @@ Processes YASARA log files of protein-protein docked models to extract and visua
 * reshape
 
 ## Introduction
-YASARA is a molecular visualization software with many functions built into it. One such
+YASARA is a molecular visualization software with many built-in functions. One such
 function is the analysing interactions feature which predicts possible interactions between
 different molecules, atoms, or residues. This repository was developed to better utilize
 the output provided by this function for the purpose of docked-model studies. 
@@ -38,7 +39,7 @@ other_interactions. Name these files as contacts.docx, hbonds.docx, and other_in
 3. Run the scripts contacts_to_csv.py, hbonds_to_csv.py, and other_interactions_to_csv.py to convert log file data
 into csv files (tabulates the data)
     - eg: to run the file contacts_to_csv.py, you'd enter this in the terminal:
-    ```python3 contacts_to_csv.py path/to/input_folder/```
+    ```python3 contacts_to_csv.py -i path/to/input_folder/```
     - Each run will produce a csv file in your input folder
 4. Run tables_for_line_plot.py to create contacts csv files for each pdb file.
 5. Run the "line plot of contacts" R chunk from the R_analysis.Rmd notebook on each file

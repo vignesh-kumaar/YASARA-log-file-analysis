@@ -161,6 +161,7 @@ def fill_zeros_for_non_interactions(no_dash_incomplete_dict, search_range, conta
                 null_index = null_index + 1
     return contacts_grid
 
+
 def write_output_to_csv_files(infile, contacts_grid):
     """
     Writes data of each PDB file from contacts_grid in different csv files
