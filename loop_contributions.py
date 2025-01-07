@@ -36,16 +36,16 @@ def track_particular_loops(interactions_table):
     # condition = (range_1) | (range_2) | (range_3) | (range_4) | (range_5) | (range_6)
 
     # L 4, 6, 7 including ELs for pseudomonas fluorescens bamA
-    # range_1 = interactions_table['Receptor residue'].between(523, 570)
-    # range_2 = interactions_table['Receptor residue'].between(616, 702)
-    # range_3 = interactions_table['Receptor residue'].between(712, 765)
-    # condition = range_1 | range_2 | range_3
+    range_1 = interactions_table['Receptor residue'].between(523, 570)
+    range_2 = interactions_table['Receptor residue'].between(616, 702)
+    range_3 = interactions_table['Receptor residue'].between(712, 765)
+    condition = range_1 | range_2 | range_3
 
     # L 4, 6, 7 including ELs for ecoli bamA
-    range_1 = interactions_table['Receptor residue'].between(522, 579)
-    range_2 = interactions_table['Receptor residue'].between(627, 720)
-    range_3 = interactions_table['Receptor residue'].between(734, 778)
-    condition = range_1 | range_2 | range_3
+    # range_1 = interactions_table['Receptor residue'].between(522, 579)
+    # range_2 = interactions_table['Receptor residue'].between(627, 720)
+    # range_3 = interactions_table['Receptor residue'].between(734, 778)
+    # condition = range_1 | range_2 | range_3
 
     df = interactions_table[condition]
     df = df[df['Contacts across PDBs'] > 0]

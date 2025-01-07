@@ -1,11 +1,14 @@
 ---
 title: "R_analysis"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
 # Set working environment path here:
 ```{r}
-setwd("/home/vignesh/Data/old_ubuntu/YASARA-log-file-analysis")
+# setwd("/home/vignesh/Data/old_ubuntu/YASARA-log-file-analysis")
+setwd("/home/vignesh/Data/YASARA-log-file-analysis")
 ```
 
 # install packages
@@ -141,7 +144,7 @@ wilcox.test(sample_2_contacts, sample_1_contacts)
 ```{r}
 rm(list=ls())
 # modify the path to the folder and the filename in the lines below to display a line plot for that file
-path_to_dir = "ians_work/analysis/"
+path_to_dir = "ecoli_bamA_mosselii_llpA1/analysis/"
 filename = "h_bonds_matrix.csv"
 
 path_to_file = paste(path_to_dir, filename, sep="")

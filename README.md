@@ -34,7 +34,7 @@ other_interactions. Name these files as contacts.docx, hbonds.docx, and other_in
 * Insert page breaks at the end of interactions information for each pdb file
 
 ## How do I use this?
-1. Make log files using YASARA and your post-docking pdb files following the guidelines provided (insert link)
+1. Make log files using YASARA and your post-docking pdb files following the [tutorial](https://vignesh-kumaar.github.io/ppdaty.html)
 2. Create a new folder inside the repository and place the three log files inside the folder
 3. Run the scripts contacts_to_csv.py, hbonds_to_csv.py, and other_interactions_to_csv.py to convert log file data
 into csv files (tabulates the data)
